@@ -53,14 +53,10 @@ def checkUserStatus():
                     hours = int(timeMatch.group(1))
                     minutes = int(timeMatch.group(2))
                     userInfo['timeInMinutes'] = hours * 60 + minutes
-                    if hours == 0:
-                        userInfo['canMarryNow'] = True
                 else:
                     minutesOnly = re.search(r'(\d+)', timeStr)
                     if minutesOnly:
                         userInfo['timeInMinutes'] = int(minutesOnly.group(1))
-                        if userInfo['timeInMinutes'] < 60:
-                            userInfo['canMarryNow'] = True
         
         rollsMatch = re.search(r'Você tem \*\*(\d+)\*\* rolls restantes', content)
         if rollsMatch:
