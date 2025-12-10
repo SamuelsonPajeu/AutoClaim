@@ -12,7 +12,7 @@ botID = '432610292342587392'
 auth = {'authorization' : Vars.token}
 bot = discum.Client(token = Vars.token, log=False)
 url = (f'https://discord.com/api/v8/channels/{Vars.channelId}/messages')
-emoji = '🐿️'
+emoji = '👍'
 
 try:
     myUserID = json.loads(base64.b64decode(Vars.token.split('.')[0] + '==').decode('utf-8'))['id']
@@ -144,9 +144,9 @@ def processCard(jsonCard, isScheduleActive, rollUserId=None):
     if not 'footer' in jsonCard['embeds'][0] or not 'icon_url' in jsonCard['embeds'][0]['footer']:
         print(unclaimed+' ---- ',cardInfo['power'],' - '+cardInfo['name']+' - '+cardInfo['series'])
         if shouldClaim(cardInfo['name'], cardInfo['series'], cardInfo['power'], isScheduleActive):
-            isOwnRoll = rollUserId is None or rollUserId == myUserID
+            isOwnRoll = isScheduleActive or (rollUserId is not None and rollUserId == myUserID)
             
-            if not isOwnRoll and not isScheduleActive:
+            if not isOwnRoll:
                 print(f'Zé povinho aqui não ✋🚫, anti roubo ativado')
                 print(f'Esposa(o) de alguém detectada(o). Esperando ficar solteira 😋...')
                 time.sleep(10)
