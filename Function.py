@@ -3,6 +3,7 @@ import json
 import time
 import requests
 import Vars
+import base64
 from datetime import datetime
 from icecream import ic
 from discum.utils.slash import SlashCommander
@@ -12,6 +13,11 @@ auth = {'authorization' : Vars.token}
 bot = discum.Client(token = Vars.token, log=False)
 url = (f'https://discord.com/api/v8/channels/{Vars.channelId}/messages')
 emoji = '🐿️'
+
+try:
+    myUserID = json.loads(base64.b64decode(Vars.token.split('.')[0] + '==').decode('utf-8'))['id']
+except:
+    myUserID = None
 
 def checkUserStatus():
     import re
@@ -31,8 +37,15 @@ def checkUserStatus():
         'canGetDk': False
     }
     
+    botResponse = None
     if jsonResponse and len(jsonResponse) > 0:
-        content = jsonResponse[0].get('content', '')
+        for message in jsonResponse:
+            if message.get('author', {}).get('id') == botID:
+                botResponse = message
+                break
+    
+    if botResponse:
+        content = botResponse.get('content', '')
         ic(content)
         
         if 'você __pode__ se casar agora mesmo' in content or 'você pode se casar agora mesmo' in content.lower():
@@ -107,7 +120,7 @@ def claimCard(cardName, idMessage):
     response = requests.put(f'https://discord.com/api/v8/channels/{Vars.channelId}/messages/{idMessage}/reactions/{emoji}/%40me', headers=auth)
     return response.status_code == 204
 
-def processCard(jsonCard, isScheduleActive):
+def processCard(jsonCard, isScheduleActive, rollUserId=None):
     claimed = '❤️'
     unclaimed = '🤍'
     kakera = '💎'
@@ -131,6 +144,13 @@ def processCard(jsonCard, isScheduleActive):
     if not 'footer' in jsonCard['embeds'][0] or not 'icon_url' in jsonCard['embeds'][0]['footer']:
         print(unclaimed+' ---- ',cardInfo['power'],' - '+cardInfo['name']+' - '+cardInfo['series'])
         if shouldClaim(cardInfo['name'], cardInfo['series'], cardInfo['power'], isScheduleActive):
+            isOwnRoll = rollUserId is None or rollUserId == myUserID
+            
+            if not isOwnRoll and not isScheduleActive:
+                print(f'Zé povinho aqui não ✋🚫, anti roubo ativado')
+                print(f'Esposa(o) de alguém detectada(o). Esperando ficar solteira 😋...')
+                time.sleep(10)
+            
             cardInfo['wasClaimed'] = claimCard(cardInfo['name'], cardInfo['idMessage'])
     else:
         cardInfo['isAlreadyClaimed'] = True
@@ -211,15 +231,15 @@ def simpleRoll():
             print(f'Mensagem inválida detectada (erro {errorCount}/{maxErrors}), verificando status...')
             
             if errorCount >= maxErrors:
-                print('Limite de erros atingido. Encerrando execução.')
-                return
+                print('Limite de erros atingido.')
+                break
             
             userStatus = checkUserStatus()
             if userStatus['rollsRemaining'] == 0:
-                print('Nenhum roll disponível após verificação. Encerrando.')
-                return
+                print('Nenhum roll disponível após verificação.')
+                break
             
-            maxRolls = userStatus['rollsRemaining'] - i
+            maxRolls = i + userStatus['rollsRemaining']
             continue
         
         i += 1
@@ -260,10 +280,13 @@ def watchMessages():
         if resp.event.message:
             message = resp.parsed.auto()
             if message['channel_id'] == Vars.channelId and message['author']['id'] == botID:
-                # ic(message['content'])
                 if 'embeds' in message and len(message['embeds']) > 0:
                     try:
-                        processCard(message, isScheduleActive=False)
+                        rollUserId = None
+                        if 'interaction' in message and 'user' in message['interaction']:
+                            rollUserId = message['interaction']['user']['id']
+                        
+                        processCard(message, isScheduleActive=False, rollUserId=rollUserId)
                     except Exception as e:
                         pass
     
