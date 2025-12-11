@@ -1,4 +1,5 @@
-token = ''  
+token = '' 
+userId = ''
 channelId = ''                 
 serverId = ''
 
@@ -13,7 +14,7 @@ wishlist = [
 ]
 desiredSeriesMode = 'all'
 minCardPower = 150
-minCardPowerMode = 'self'
+minCardPowerMode = 'all'
 marryLastRoll = True
 divorceLastRoll = True
 pokeRoll = True
@@ -22,5 +23,5 @@ repeatMinute = '06'
 repeatBetween = '20'
 runImmediately = True
 snooze = True
-snoozeBegin = '00'
+snoozeBegin = '03'
 snoozeEnd = '07'

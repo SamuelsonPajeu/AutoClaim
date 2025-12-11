@@ -12,12 +12,8 @@ botID = '432610292342587392'
 auth = {'authorization' : Vars.token}
 bot = discum.Client(token = Vars.token, log=False)
 url = (f'https://discord.com/api/v8/channels/{Vars.channelId}/messages')
+myUserID = Vars.userId
 emoji = '👍'
-
-try:
-    myUserID = json.loads(base64.b64decode(Vars.token.split('.')[0] + '==').decode('utf-8'))['id']
-except:
-    myUserID = None
 
 def checkUserStatus():
     import re
@@ -149,8 +145,9 @@ def processCard(jsonCard, isScheduleActive, rollUserId=None):
             if not isOwnRoll:
                 print(f'Zé povinho aqui não ✋🚫, anti roubo ativado')
                 print(f'Esposa(o) de alguém detectada(o). Esperando ficar solteira 😋...')
-                time.sleep(10)
-            
+                time.sleep(8)
+
+            time.sleep(2)
             cardInfo['wasClaimed'] = claimCard(cardInfo['name'], cardInfo['idMessage'])
     else:
         cardInfo['isAlreadyClaimed'] = True
