@@ -3,14 +3,13 @@ import time
 import schedule
 import threading
 import random
+from datetime import datetime
 from Function import simpleRoll, watchMessages
 from i18n import get_text
 
-# Optional icecream import for debugging
 try:
     from icecream import ic
 except ImportError:
-    # Fallback to print if icecream is not installed
     ic = lambda *args: print(*args) if args else None
 
 nextMinute = None
@@ -26,13 +25,22 @@ def scheduleNextRoll():
         minMinute = int(Vars.repeatMinute)
         maxMinute = int(Vars.repeatBetween)
         nextMinute = random.randint(minMinute, maxMinute)
-        timeString = f':{nextMinute:02d}'
     else:
         nextMinute = int(Vars.repeatMinute)
-        timeString = ':' + Vars.repeatMinute
     
-    schedule.every().hour.at(timeString).do(lambda: [simpleRoll(), scheduleNextRoll()])
-    print(get_text('log_next_execution', lang, minute=nextMinute))
+    now = datetime.now()
+    currentMinute = now.minute
+    currentHour = now.hour
+    
+    if nextMinute <= currentMinute:
+        nextHour = (currentHour + 1) % 24
+    else:
+        nextHour = currentHour
+    
+    timeString = f'{nextHour:02d}:{nextMinute:02d}'
+    
+    schedule.every().day.at(timeString).do(lambda: [simpleRoll(), scheduleNextRoll()])
+    print(get_text('log_next_execution_full', lang, hour=nextHour, minute=nextMinute))
     return nextMinute
 
 print('='*50)

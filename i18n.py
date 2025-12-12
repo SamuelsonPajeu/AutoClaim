@@ -46,6 +46,7 @@ translations = {
         'log_random_execution': 'Execução aleatória: entre XX:{min} e XX:{max}',
         'log_fixed_execution': 'Execução fixa: a cada hora no minuto {min}',
         'log_next_execution': 'Próxima execução agendada para: XX:{minute:02d}',
+        'log_next_execution_full': 'Próxima execução agendada para: {hour:02d}:{minute:02d}',
     },
     
     'en': {
@@ -95,6 +96,7 @@ translations = {
         'log_random_execution': 'Random execution: between XX:{min} and XX:{max}',
         'log_fixed_execution': 'Fixed execution: every hour at minute {min}',
         'log_next_execution': 'Next execution scheduled for: XX:{minute:02d}',
+        'log_next_execution_full': 'Next execution scheduled for: {hour:02d}:{minute:02d}',
     },
 }
 
