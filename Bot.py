@@ -32,10 +32,7 @@ def scheduleNextRoll():
     currentMinute = now.minute
     currentHour = now.hour
     
-    if nextMinute <= currentMinute:
-        nextHour = (currentHour + 1) % 24
-    else:
-        nextHour = currentHour
+    nextHour = (currentHour + 1) % 24
     
     timeString = f'{nextHour:02d}:{nextMinute:02d}'
     

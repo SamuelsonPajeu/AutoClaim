@@ -171,6 +171,7 @@ def processCard(jsonCard, isScheduleActive, rollUserId=None):
                         print(f'{get_text("log_has_kakera", lang)}: {cardsKakera}')
                     if cardsKakera in Vars.desiredKakeras:
                         print(f'{kakera} - {kakera} - {get_text("log_trying_react_kakera", lang)} {cardsKakera} {get_text("log_kakera_of", lang)} {cardInfo["name"]}')
+                        time.sleep(0.5)
                         bot.click(jsonCard['author']['id'], channelID=jsonCard['channel_id'], guildID=Vars.serverId, messageID=jsonCard['id'], messageFlags=jsonCard['flags'], data={'component_type': 2, 'custom_id': components[index]['custom_id']})
                         time.sleep(0.5)
                 except IndexError:
